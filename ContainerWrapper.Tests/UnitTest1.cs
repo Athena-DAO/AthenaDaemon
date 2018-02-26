@@ -6,8 +6,10 @@ namespace ContainerWrapper.Tests
     public class UnitTest1
     {
         [TestMethod]
-        public void TestMethod1()
+        public async System.Threading.Tasks.Task TestMethod1Async()
         {
+            DockerContainerManager manager = new DockerContainerManager();
+            await manager.ProvisionDockerContainerAsync("hello-world", "latest");
         }
     }
 }
