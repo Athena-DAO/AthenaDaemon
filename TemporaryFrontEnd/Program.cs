@@ -28,7 +28,6 @@ namespace TemporaryFrontEnd
 
         private static void MyCallback(string message)
         {
-
             Console.WriteLine("Recieved " + message);
         }
     }
