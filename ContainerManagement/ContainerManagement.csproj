@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="DockerManager.cs" />
+    <Compile Remove="DockerContainer.cs" />
   </ItemGroup>
 
   <ItemGroup>

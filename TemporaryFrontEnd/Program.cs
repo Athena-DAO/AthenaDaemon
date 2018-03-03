@@ -1,7 +1,9 @@
-﻿using ContainerWrapper;
+﻿using ContainerManagement;
+using ContainerWrapper;
 using MachineManagementAndInformation;
 using QueueConsumer;
 using System;
+using System.IO;
 
 namespace TemporaryFrontEnd
 {
@@ -9,8 +11,7 @@ namespace TemporaryFrontEnd
     {
         static void Main(string[] args)
         {
-            //DockerContainerManager containerManager = new DockerContainerManager();
-            //containerManager.ProvisionDockerContainerAsync("lalitadithya/sampleapp", "latest").Wait();
+            DockerAsync().Wait();
 
             Console.WriteLine("Number of containers = " + MachineInformation.NumberOfContainersSupported);
 
@@ -20,6 +21,15 @@ namespace TemporaryFrontEnd
             myConsumer.Consume("task_queue1");
 
             Console.ReadLine();
+        }
+
+        static async System.Threading.Tasks.Task DockerAsync()
+        {
+            DockerManager containerManager = DockerManager.Instance;
+            containerManager.InitDockerClient("npipe://./pipe/docker_engine");
+            (string output, string error) = await containerManager.RunImage("lalitadithya/sampleapp", "latest", new string[] { "-u", "url" });
+            Console.WriteLine("output is " + output);
+            Console.WriteLine("error is " + error);
         }
 
         private static void MyCallback(string message)

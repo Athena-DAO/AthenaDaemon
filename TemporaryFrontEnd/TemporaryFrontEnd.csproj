@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ContainerManagement\ContainerManagement.csproj" />
     <ProjectReference Include="..\ContainerWrapper\ContainerWrapper.csproj" />
     <ProjectReference Include="..\MachineManagementAndInformation\MachineManagementAndInformation.csproj" />
     <ProjectReference Include="..\QueueConsumer\QueueConsumer.csproj" />
