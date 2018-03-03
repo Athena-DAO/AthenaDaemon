@@ -4,12 +4,13 @@ using MachineManagementAndInformation;
 using QueueConsumer;
 using System;
 using System.IO;
+using System.Threading;
 
 namespace TemporaryFrontEnd
 {
     class Program
     {
-        private static DockerManager containerManager;
+        //private static DockerManager containerManager;
 
         static void Main(string[] args)
         {
@@ -22,8 +23,15 @@ namespace TemporaryFrontEnd
             Console.WriteLine("Number of containers = " + MachineInformation.NumberOfContainersSupported);
             Console.ReadLine();
 
-            Consumer myConsumer = new Consumer("localhost", "task_queue1");
-            myConsumer.Consume(new MessageRecieved());
+            IListener listener = new Listener(new Consumer("localhost", "task_queue1"), new MessageRecieved());
+
+            new Thread(() =>
+            {
+                listener.StartListening();
+            }).Start();
+
+            //Consumer myConsumer = new Consumer("localhost", "task_queue1");
+            //myConsumer.Consume(new MessageRecieved());
             Console.ReadLine();
         }
 
