@@ -1,14 +1,12 @@
 ﻿using Docker.DotNet;
 using Docker.DotNet.Models;
+using Interfaces;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using System.Threading;
 
 namespace ContainerManagement
 {
-    public sealed class DockerManager
+    public sealed class DockerManager : IContainerManager
     {
         private static volatile DockerManager instance;
         private static object syncRoot = new object();
@@ -37,7 +35,7 @@ namespace ContainerManagement
             }
         }
 
-        public void InitDockerClient(string uri)
+        public void InitClient(string uri)
         {
             client = new DockerClientConfiguration(new Uri("npipe://./pipe/docker_engine")).CreateClient();
         }

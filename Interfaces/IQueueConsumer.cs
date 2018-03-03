@@ -1,6 +1,6 @@
 ﻿namespace Interfaces
 {
-    interface IQueueConsumer
+    public interface IQueueConsumer
     {
         void Consume(string queueName);
     }

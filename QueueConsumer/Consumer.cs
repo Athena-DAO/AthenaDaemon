@@ -1,4 +1,5 @@
-﻿using RabbitMQ.Client;
+﻿using Interfaces;
+using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ namespace QueueConsumer
 {
     public delegate void MessageRecievedCallback(string s);
 
-    public class Consumer
+    public class Consumer : IQueueConsumer
     {
         private AutoResetEvent autoResetEvent = new AutoResetEvent(false);
         private ConnectionFactory connectionFactory;

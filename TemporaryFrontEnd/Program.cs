@@ -13,7 +13,7 @@ namespace TemporaryFrontEnd
         static void Main(string[] args)
         {
             containerManager = DockerManager.Instance;
-            containerManager.InitDockerClient("npipe://./pipe/docker_engine");
+            containerManager.InitClient("npipe://./pipe/docker_engine");
             (string output, string error) = containerManager.RunImage("lalitadithya/sampleapp", "latest", new string[] { "-u", "url" });
             Console.WriteLine("output is " + output);
             Console.WriteLine("error is " + error);
