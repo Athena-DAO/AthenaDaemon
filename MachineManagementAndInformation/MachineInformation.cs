@@ -6,6 +6,12 @@ namespace MachineManagementAndInformation
 {
     public class MachineInformation
     {
-        
+        public static int NumberOfContainersSupported
+        {
+            get
+            {
+                return Environment.ProcessorCount;
+            }
+        }
     }
 }
