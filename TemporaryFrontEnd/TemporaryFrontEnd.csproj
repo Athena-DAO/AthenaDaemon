@@ -8,6 +8,7 @@
   <ItemGroup>
     <ProjectReference Include="..\ContainerWrapper\ContainerWrapper.csproj" />
     <ProjectReference Include="..\MachineManagementAndInformation\MachineManagementAndInformation.csproj" />
+    <ProjectReference Include="..\QueueConsumer\QueueConsumer.csproj" />
   </ItemGroup>
 
 </Project>

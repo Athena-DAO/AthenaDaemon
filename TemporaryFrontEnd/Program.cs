@@ -1,5 +1,6 @@
 ﻿using ContainerWrapper;
 using MachineManagementAndInformation;
+using QueueConsumer;
 using System;
 
 namespace TemporaryFrontEnd
@@ -14,6 +15,16 @@ namespace TemporaryFrontEnd
             Console.WriteLine("Number of containers = " + MachineInformation.NumberOfContainersSupported);
 
             Console.ReadLine();
+
+            Consumer myConsumer = new Consumer("localhost", "task_queue1", MyCallback);
+            myConsumer.Consume("task_queue1");
+
+            Console.ReadLine();
+        }
+
+        private static void MyCallback(string message)
+        {
+            Console.WriteLine("Recieved " + message);
         }
     }
 }
