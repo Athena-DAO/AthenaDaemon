@@ -1,14 +1,11 @@
 ﻿using Interfaces;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 
 namespace QueueConsumer
 {
-    public delegate void MessageRecievedCallback(string s);
 
     public class Consumer : IQueueConsumer
     {
@@ -17,7 +14,8 @@ namespace QueueConsumer
         private IConnection connection;
         private IModel channel;
         private EventingBasicConsumer consumer;
-        MessageRecievedCallback messageRecievedCallback;
+        private IMessageRecieved messageRecieved;
+        private string queueName;
 
         private void InitializeConnectionFactory(string hostName)
         {
@@ -42,18 +40,19 @@ namespace QueueConsumer
         private void SetUpConsumer()
         {
             consumer = new EventingBasicConsumer(channel);
-            consumer.Received += Consumer_Received;
         }
 
         private void Consumer_Received(object sender, BasicDeliverEventArgs e)
         {
-            messageRecievedCallback.Invoke(Encoding.UTF8.GetString(e.Body));
+            messageRecieved.ProcessMessage(Encoding.UTF8.GetString(e.Body));
             channel.BasicAck(e.DeliveryTag, false);
             autoResetEvent.Set();
         }
 
-        public void Consume(string queueName)
+        public void Consume(IMessageRecieved messageRecieved)
         {
+            this.messageRecieved = messageRecieved;
+            consumer.Received += Consumer_Received;
             channel.BasicConsume(queueName, false, consumer);
             while (true)
             {
@@ -61,16 +60,13 @@ namespace QueueConsumer
             }
         }
 
-        public Consumer(string hostName, string queueName, MessageRecievedCallback messageRecievedCallback)
+        public Consumer(string hostName, string queueName)
         {
-            this.messageRecievedCallback = messageRecievedCallback;
+            this.queueName = queueName;
 
             InitializeConnectionFactory(hostName);
-
             CreateConnection();
-
             SetUpChannel(queueName);
-
             SetUpConsumer();
         }
     }

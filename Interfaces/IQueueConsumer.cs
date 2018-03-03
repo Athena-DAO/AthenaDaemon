@@ -2,6 +2,6 @@
 {
     public interface IQueueConsumer
     {
-        void Consume(string queueName);
+        void Consume(IMessageRecieved messageRecieved);
     }
 }
