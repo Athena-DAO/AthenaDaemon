@@ -7,8 +7,12 @@ namespace TemporaryFrontEnd
     {
         static void Main(string[] args)
         {
-            DockerContainerManager containerManager = new DockerContainerManager();
-            containerManager.ProvisionDockerContainerAsync("lalitadithya/sampleapp", "latest").Wait();
+            //DockerContainerManager containerManager = new DockerContainerManager();
+            //containerManager.ProvisionDockerContainerAsync("lalitadithya/sampleapp", "latest").Wait();
+
+            //Console.WriteLine(MachineInformation.NumberOfConatinersSupported);
+
+            Console.ReadLine();
         }
     }
 }

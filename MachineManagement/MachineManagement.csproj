@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="SystemInformation.cs" />
+    <Compile Remove="SystemInformation.cs" />
   </ItemGroup>
 
 </Project>
