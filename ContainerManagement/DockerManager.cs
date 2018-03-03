@@ -42,9 +42,9 @@ namespace ContainerManagement
             client = new DockerClientConfiguration(new Uri("npipe://./pipe/docker_engine")).CreateClient();
         }
 
-        private async System.Threading.Tasks.Task<CreateContainerResponse> CreateContainer(string parent, string containerId, string[] args)
+        private CreateContainerResponse CreateContainer(string parent, string containerId, string[] args)
         {
-            return await client.Containers.CreateContainerAsync(new CreateContainerParameters()
+            return client.Containers.CreateContainerAsync(new CreateContainerParameters()
             {
                 Name = containerId,
                 Image = parent,
@@ -52,67 +52,67 @@ namespace ContainerManagement
                 AttachStdin = false,
                 ArgsEscaped = false,
                 Cmd = args
-            });
+            }).Result;
         }
 
-        private async System.Threading.Tasks.Task StartContainer(string containerId)
+        private void StartContainer(string containerId)
         {
-            await client.Containers.StartContainerAsync(containerId, new ContainerStartParameters()
+            client.Containers.StartContainerAsync(containerId, new ContainerStartParameters()
             {
 
-            });
+            }).Wait();
         }
 
-        private async System.Threading.Tasks.Task StopContainer(string containerId)
+        private void StopContainer(string containerId)
         {
-            await client.Containers.StopContainerAsync(containerId, new ContainerStopParameters()
+            client.Containers.StopContainerAsync(containerId, new ContainerStopParameters()
             {
                 WaitBeforeKillSeconds = 1
-            });
+            }).Wait();
         }
 
-        private async System.Threading.Tasks.Task RemoveContainer(string containerId)
+        private void RemoveContainer(string containerId)
         {
-            await client.Containers.RemoveContainerAsync(containerId, new ContainerRemoveParameters()
+            client.Containers.RemoveContainerAsync(containerId, new ContainerRemoveParameters()
             {
                 Force = true
-            });
+            }).Wait();
         }
 
-        private async System.Threading.Tasks.Task PullImage(string parent, string tag)
+        private void PullImage(string parent, string tag)
         {
-            await client.Images.CreateImageAsync(new ImagesCreateParameters()
+            client.Images.CreateImageAsync(new ImagesCreateParameters()
             {
                 FromImage = parent,
                 Tag = tag
-            }, null, new Progress());
+            }, null, new Progress()).Wait();
         }
 
-        public async System.Threading.Tasks.Task<(string, string)> RunImage(string parent, string tag, string[] args)
+        public (string, string) RunImage(string parent, string tag, string[] args)
         {
             string containerId = Guid.NewGuid().ToString();
-            await PullImage(parent, tag);
+            PullImage(parent, tag);
 
-            CreateContainerResponse response = await CreateContainer(parent, containerId, args);
-            await StartContainer(containerId);
+            CreateContainerResponse response = CreateContainer(parent, containerId, args);
+            StartContainer(containerId);
 
             string stdOut = "", stdErr = "";
-            using (var stream1 = await client.Containers.AttachContainerAsync(response.ID, false, new ContainerAttachParameters()
+            using (var stream1 = client.Containers.AttachContainerAsync(response.ID, false, new ContainerAttachParameters()
             {
                 Stream = true,
                 Stderr = true,
                 Stdin = false,
                 Stdout = true,
                 Logs = "1"
-            }))
+            }).Result)
             {
-                (string output, string stderr) = await stream1.ReadOutputToEndAsync(default(CancellationToken));
+                (string output, string stderr) = stream1.ReadOutputToEndAsync(default(CancellationToken)).Result;
                 stdOut += output;
                 stdErr += stdErr;
             }
 
-            await StopContainer(containerId);
-            await RemoveContainer(containerId);
+            StopContainer(containerId);
+            RemoveContainer(containerId);
 
             return (stdOut, stdErr);
         }

@@ -11,7 +11,11 @@ namespace TemporaryFrontEnd
     {
         static void Main(string[] args)
         {
-            DockerAsync().Wait();
+            DockerManager containerManager = DockerManager.Instance;
+            containerManager.InitDockerClient("npipe://./pipe/docker_engine");
+            (string output, string error) = containerManager.RunImage("lalitadithya/sampleapp", "latest", new string[] { "-u", "url" });
+            Console.WriteLine("output is " + output);
+            Console.WriteLine("error is " + error);
 
             Console.WriteLine("Number of containers = " + MachineInformation.NumberOfContainersSupported);
 
@@ -21,15 +25,6 @@ namespace TemporaryFrontEnd
             myConsumer.Consume("task_queue1");
 
             Console.ReadLine();
-        }
-
-        static async System.Threading.Tasks.Task DockerAsync()
-        {
-            DockerManager containerManager = DockerManager.Instance;
-            containerManager.InitDockerClient("npipe://./pipe/docker_engine");
-            (string output, string error) = await containerManager.RunImage("lalitadithya/sampleapp", "latest", new string[] { "-u", "url" });
-            Console.WriteLine("output is " + output);
-            Console.WriteLine("error is " + error);
         }
 
         private static void MyCallback(string message)
