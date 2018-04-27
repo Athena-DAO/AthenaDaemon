@@ -1,6 +1,7 @@
 ﻿using Interfaces;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using System;
 using System.Text;
 using System.Threading;
 
@@ -21,7 +22,7 @@ namespace QueueConsumer
         {
             connectionFactory = new ConnectionFactory()
             {
-                HostName = hostName
+                Uri = new Uri(hostName)
             };
         }
 

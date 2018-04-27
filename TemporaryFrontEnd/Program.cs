@@ -13,9 +13,8 @@ namespace TemporaryFrontEnd
 
         static void Main(string[] args)
         {
-            int numberOfContainers = 2;
             Console.WriteLine("Number of containers = " + MachineInformation.NumberOfContainersSupported);
-            StartService(DockerManager.Instance, numberOfContainers);
+            StartService(DockerManager.Instance, MachineInformation.NumberOfContainersSupported);
             Console.ReadLine();
         }
 
@@ -24,7 +23,7 @@ namespace TemporaryFrontEnd
             containerManager.InitClient("npipe://./pipe/docker_engine");
             for (int i = 0; i < numberOfContainers; i++)
             {
-                IListener listener = new Listener(new Consumer("localhost", "task_queue1"), new MessageRecieved(containerManager));
+                IListener listener = new Listener(new Consumer("amqp://icpodzmj:k6tphAR4wqIo8ma0kbTXZ15tozBfrzvc@eagle.rmq.cloudamqp.com/icpodzmj", "athena_task_queue"), new MessageRecieved(containerManager));
                 new Thread(() =>
                 {
                     listener.StartListening();
@@ -43,10 +42,23 @@ namespace TemporaryFrontEnd
 
             public void ProcessMessage(string message)
             {
+                string[] paramerters = message.Split("~");
+                string pipelineId = paramerters[0];
+                string image = paramerters[1];
+                string baseUrl = "http://athena.a2hosted.com";
                 Console.WriteLine(Thread.CurrentThread.Name + " Recieved " + message);
-                (string output, string error) = containerManager.RunImage("lalitadithya/sampleapp", "latest", new string[] { "-u", "url" });
-                Console.WriteLine(Thread.CurrentThread.Name + " output is " + output);
-                Console.WriteLine(Thread.CurrentThread.Name + " error is " + error);
+                GuiGlue(Guid.NewGuid().ToString(), image);
+                //(string output, string error) = containerManager.RunImage(image, "latest", new string[] { baseUrl, pipelineId });
+            }
+
+            private void GuiGlue(string pipelineId, string image)
+            {
+                string basePath = @"C:\Users\lalit\Pictures\Saved Pictures\da1dafa3-7641-4b28-adc0-0bb4d332cf55_m77d9erb00ypj!App\";
+                string filePath = Path.Combine(basePath, pipelineId);
+                Directory.CreateDirectory(filePath);
+                File.WriteAllText(Path.Combine(filePath, "name.txt"), pipelineId.Substring(0, 12));
+                File.WriteAllText(Path.Combine(filePath, "image.txt"), image);
+                File.WriteAllText(Path.Combine(filePath, "timestamp.txt"), DateTime.Now.ToLongDateString());
             }
         }
     }
