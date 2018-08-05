@@ -53,7 +53,7 @@ namespace TemporaryFrontEnd
 
             private void GuiGlue(string pipelineId, string image)
             {
-                string basePath = @"C:\Users\lalit\Pictures\Saved Pictures\da1dafa3-7641-4b28-adc0-0bb4d332cf55_m77d9erb00ypj!App\";
+                string basePath = @"C:\Users\lalit\Pictures\Saved Pictures\da1dafa3-7641-4b28-adc0-0bb4d332cf55_m77d9erb00ypj!App";
                 string filePath = Path.Combine(basePath, pipelineId);
                 Directory.CreateDirectory(filePath);
                 File.WriteAllText(Path.Combine(filePath, "name.txt"), pipelineId.Substring(0, 12));
